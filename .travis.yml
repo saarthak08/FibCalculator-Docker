@@ -1,0 +1,30 @@
+language: generic
+
+sudo: required
+
+branches:
+  only:
+  - master
+
+services:
+  - docker
+
+before_install:
+  - docker build -t saarthak08/complex-multistage-docker-client-test -f ./client/Dockerfile.dev ./client
+# - Additional test scripts for other tests. 
+
+script:
+  - docker run -e CI=true saarthak08/complex-multistage-docker-client-test npm test -- --coverage
+
+after_success:
+  - docker build -t saarthak08/complex-multistage-docker-client ./client
+  - docker build -t saarthak08/complex-multistage-docker-server ./server
+  - docker build -t saarthak08/complex-multistage-docker-worker ./worker
+  - docker build -t saarthak08/complex-multistage-docker-nginx ./nginx
+
+  - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_ID" --password-stdin 
+
+  - docker push saarthak08/complex-multistage-docker-client
+  - docker push saarthak08/complex-multistage-docker-server
+  - docker push saarthak08/complex-multistage-docker-worker
+  - docker push saarthak08/complex-multistage-docker-nginx
