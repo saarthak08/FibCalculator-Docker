@@ -15,6 +15,8 @@ before_install:
 
 script:
   - docker run -e CI=true saarthak08/complex-multistage-docker-client-test npm test -- --coverage
+# - Additional test scripts for other tests. 
+
 
 after_success:
   - docker build -t saarthak08/complex-multistage-docker-client ./client
@@ -28,3 +30,5 @@ after_success:
   - docker push saarthak08/complex-multistage-docker-server
   - docker push saarthak08/complex-multistage-docker-worker
   - docker push saarthak08/complex-multistage-docker-nginx
+
+# Alternatively, what can be done is simply without pushing images to dockerhub, deploy the code to AWS as AWS now supports docker-compose.
