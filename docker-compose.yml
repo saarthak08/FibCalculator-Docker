@@ -11,7 +11,9 @@ services:
     image: 'redis:latest'
 
   api:
-    image: saarthak08/complex-multistage-docker-server
+    build:
+      dockerfile: Dockerfile
+      context: ./server
     depends_on: 
       - redis
       - postgres
@@ -28,13 +30,17 @@ services:
     - PGPORT=5432
 
   client:
-    image: saarthak08/complex-multistage-docker-client
+    build:
+      dockerfile: Dockerfile
+      context: ./client
     volumes: 
       - /app/node_modules
       - ./client:/app
     
   worker:
-    image: saarthak08/complex-multistage-docker-worker
+    build:
+      dockerfile: Dockerfile
+      context: ./worker
     depends_on: 
       - redis
     volumes: 
@@ -45,7 +51,9 @@ services:
       - REDIS_PORT=6379
     
   nginx:
-    image: saarthak08/complex-multistage-docker-nginx
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
     restart: always
     depends_on: 
       - api
